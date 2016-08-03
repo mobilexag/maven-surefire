@@ -64,9 +64,9 @@
   </modules>
 
   <scm>
-    <connection>https://github.com/mobilexag/maven-surefire.git</connection>
-    <developerConnection>https://github.com/mobilexag/maven-surefire.git</developerConnection>
-    <url>https://github.com/mobilexag/maven-surefire/tree/${project.scm.tag}</url>
+    <connection>scm:git:git@github.com:mobilexag/maven-surefire.git</connection>
+    <developerConnection>scm:git:git@github.com:mobilexag/maven-surefire.git</developerConnection>
+    <url>scm:git:ssh://github.com/mobilexag/maven-surefire.git</url>
     <tag>HEAD</tag>
   </scm>
   <ciManagement>
