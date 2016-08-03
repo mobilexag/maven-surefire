@@ -64,32 +64,30 @@
   </modules>
 
   <scm>
-    <connection>${maven.surefire.scm.devConnection}</connection>
-    <developerConnection>${maven.surefire.scm.devConnection}</developerConnection>
-    <url>https://github.com/apache/maven-surefire/tree/${project.scm.tag}</url>
+    <connection>https://github.com/mobilexag/maven-surefire.git</connection>
+    <developerConnection>https://github.com/mobilexag/maven-surefire.git</developerConnection>
+    <url>https://github.com/mobilexag/maven-surefire/tree/${project.scm.tag}</url>
     <tag>HEAD</tag>
   </scm>
-  <issueManagement>
-    <system>jira</system>
-    <url>https://issues.apache.org/jira/browse/SUREFIRE</url>
-  </issueManagement>
   <ciManagement>
-    <system>Jenkins</system>
-    <url>https://builds.apache.org/job/maven-surefire/</url>
+    <system>TeamCity</system>
+    <url>http://teamcity</url>
   </ciManagement>
   <distributionManagement>
-    <site>
-      <id>apache.website</id>
-      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
-    </site>
+    <snapshotRepository>
+      <id>mx-snapshots</id>
+      <url>http://maven.mobilex.intra/content/repositories/snapshots</url>
+    </snapshotRepository>
+      <repository>
+      <id>mx-releases</id>
+      <url>http://maven.mobilex.intra/content/repositories/releases</url>
+    </repository>
   </distributionManagement>
 
   <properties>
     <mavenVersion>2.2.1</mavenVersion>
     <!-- <shadedVersion>2.12.4</shadedVersion> commented out due to http://jira.codehaus.org/browse/MRELEASE-799 -->
     <mavenPluginPluginVersion>3.3</mavenPluginPluginVersion>
-    <maven.surefire.scm.devConnection>scm:git:https://git-wip-us.apache.org/repos/asf/maven-surefire.git</maven.surefire.scm.devConnection>
-    <maven.site.path>surefire-archives/surefire-LATEST</maven.site.path>
   </properties>
 
   <dependencyManagement>
@@ -407,48 +405,6 @@
         </plugin>
     </plugins>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <configuration>
-          <dependencyLocationsEnabled>false</dependencyLocationsEnabled><!-- waiting for MPIR-267 -->
-          <!-- pin down urls to to avoid interpolation in the modules -->
-          <anonymousConnection>${maven.surefire.scm.devConnection}</anonymousConnection>
-          <developerConnection>${maven.surefire.scm.devConnection}</developerConnection>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>index</report>
-              <report>summary</report>
-              <report>dependency-info</report>
-              <report>modules</report>
-              <report>license</report>
-              <report>project-team</report>
-              <report>scm</report>
-              <report>issue-tracking</report>
-              <report>mailing-list</report>
-              <report>dependency-management</report>
-              <report>dependencies</report>
-              <report>dependency-convergence</report>
-              <report>cim</report>
-              <report>plugin-management</report>
-              <report>plugins</report>
-              <report>distribution-management</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.12.4</version> <!-- ${shadedVersion}, but resolved due to http://jira.codehaus.org/browse/MRELEASE-799 -->
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>

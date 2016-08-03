@@ -101,6 +101,26 @@ public abstract class AbstractSurefireReportMojo
     private boolean aggregate;
 
     /**
+     * Template for resolving the screenshot name:
+     * %TestClass% gets replaced by Test-Class
+     * %TestMethod% gets replaced by Test-Method
+     *
+     * @noinspection UnusedDeclaration
+     * @since 2.11
+     */
+    @Parameter( defaultValue = "%TestClass%_%TestMethod%.png", property = "screenshotNamePattern" )
+    private String screenshotNamePattern;
+
+    /**
+     * If set, Screenshots in this location will be included in reports
+     *
+     * @noinspection UnusedDeclaration
+     * @since 2.11
+     */
+    @Parameter( property = "screenshotLocation" )
+    private String screenshotLocation;
+
+    /**
      * Whether the report should be generated or not.
      *
      * @return {@code true} if and only if the report should be generated.
@@ -154,7 +174,8 @@ public abstract class AbstractSurefireReportMojo
         }
 
         SurefireReportGenerator report =
-            new SurefireReportGenerator( reportsDirectoryList, locale, showSuccess, determineXrefLocation() );
+            new SurefireReportGenerator( reportsDirectoryList, locale, showSuccess, determineXrefLocation(),
+                    screenshotLocation, screenshotNamePattern );
 
         report.doGenerateReport( getBundle( locale ), getSink() );
     }

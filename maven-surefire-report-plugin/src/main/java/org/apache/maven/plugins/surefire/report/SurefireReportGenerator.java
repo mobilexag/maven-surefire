@@ -43,6 +43,12 @@ public final class SurefireReportGenerator
 
     private final SurefireReportParser report;
 
+    private final String screenshotLocation;
+
+    private final String screenshotNamePattern;
+
+    private final boolean showScreenshots;
+
     private List<ReportTestSuite> testSuites;
 
     private final boolean showSuccess;
@@ -52,13 +58,25 @@ public final class SurefireReportGenerator
     private static final int LEFT = Sink.JUSTIFY_LEFT;
 
     public SurefireReportGenerator( List<File> reportsDirectories, Locale locale, boolean showSuccess,
-                                    String xrefLocation )
+                                    String xrefLocation, String screenshotLocation, String screenshotNamePattern )
     {
         report = new SurefireReportParser( reportsDirectories, locale );
 
         this.xrefLocation = xrefLocation;
 
         this.showSuccess = showSuccess;
+
+        this.screenshotLocation = screenshotLocation;
+
+        this.screenshotNamePattern = screenshotNamePattern;
+
+        this.showScreenshots = screenshotLocation != null && !screenshotLocation.equals( "" );
+    }
+
+    public SurefireReportGenerator( List<File> reportsDirectories, Locale locale, boolean showSuccess,
+                                    String xrefLocation )
+    {
+        this( reportsDirectories, locale, showSuccess, xrefLocation, null, null );
     }
 
     public void doGenerateReport( ResourceBundle bundle, Sink sink )
@@ -493,6 +511,15 @@ public final class SurefireReportGenerator
 
             sink.text( "[ Detail ]" );
             sink.link_();
+            if ( showScreenshots && !testCase.getFailureType().equals( "skipped" ) )
+            {
+                atts = new SinkEventAttributeSet();
+                atts.addAttribute( SinkEventAttributes.TARGET, "about_blank" );
+                sink.link( getScreenshotPath( testCase ), atts );
+                sink.text( "[ Screenshot ]" );
+                sink.link_();
+            }
+
 
             sink.unknown( "div", TAG_TYPE_END, null );
 
@@ -579,6 +606,26 @@ public final class SurefireReportGenerator
             sinkCellAnchor( sink, tCase.getName(), toHtmlId( tCase.getFullName() ) );
 
             sink.tableRow_();
+
+            if ( showScreenshots && !type.equals( "skipped" ) )
+            {
+                sink.tableRow();
+
+                sink.tableCell();
+                sink.tableCell_();
+                sink.tableCell();
+
+                String screenshotPath = getScreenshotPath( tCase );
+
+                sink.link( screenshotPath );
+
+                SinkEventAttributeSet attr = new SinkEventAttributeSet();
+                attr.addAttribute( SinkEventAttributes.STYLE, "max-width: 100%" );
+
+                sink.figureGraphics( screenshotPath, attr );
+
+                sink.link_();
+            }
 
             String message = tCase.getFailureMessage();
 
@@ -742,5 +789,11 @@ public final class SurefireReportGenerator
                 + " } \n"
                 + " }\n"
                 + "//";
+    }
+
+    private String getScreenshotPath( ReportTestCase testCase )
+    {
+        return screenshotLocation + screenshotNamePattern.replace( "%TestClass%", testCase.getClassName() )
+                .replace( "%TestMethod%", testCase.getName() );
     }
 }
